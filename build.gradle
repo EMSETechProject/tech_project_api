@@ -37,6 +37,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	runtime('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile 'mysql:mysql-connector-java'
 	compile "com.heroku.sdk:heroku-jdbc:0.1.1"
 }
 
