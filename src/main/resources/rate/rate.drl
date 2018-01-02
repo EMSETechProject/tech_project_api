@@ -1,0 +1,22 @@
+import com.robin.camarasa.nutritivecoach.model.*;
+
+rule "R1"
+    when
+        Preferences(value > 3f, value < 7f)
+    then
+        System.out.println("\nAvis mitigé\n");
+end
+
+rule "R2"
+    when
+        Preferences(value <= 3f)
+    then
+        System.out.println("\nMauvais avis\n");
+end
+
+rule "R3"
+    when
+        Rate(value >= 7f)
+    then
+        System.out.println("\nSuper avis\n");
+end
