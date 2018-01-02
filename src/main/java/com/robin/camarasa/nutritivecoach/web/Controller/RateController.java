@@ -35,17 +35,11 @@ public class RateController {
     }
 
     @GetMapping(value = "/all")
-    public List<String> getallfood() {
+    public String getallfood() {
         Preferences preferences = new Preferences(2.5f,null,null);
         kSession.insert(preferences);
         kSession.fireAllRules();
-        List<String> tests = new ArrayList<>();
-        for (Object o : kSession.getObjects()) {
-            if(o.getClass().equals(String.class)) {
-                tests.add((String) o);
-            }
-        }
-        return tests;
+        return "tests";
     }
 
 }

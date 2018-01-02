@@ -7,12 +7,12 @@ rule "R1"
         System.out.println("\nAvis mitigé\n");
 end
 
-rule "R2"
+/*rule "R2"
     when
         Preferences(value <= 3f)
     then
-        System.out.println("\nMauvais avis\n");
-end
+        insert(new String("Bad mark"));
+end*/
 
 rule "R3"
     when
