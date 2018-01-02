@@ -11,7 +11,7 @@ rule "R2"
     when
         Preferences(value <= 3f)
     then
-        System.out.println("\nMauvais avis\n");
+        insert(new String("Bad mark"));
 end
 
 rule "R3"
