@@ -1,8 +1,7 @@
 package com.robin.camarasa.nutritivecoach.web.Controller;
 
 import com.robin.camarasa.nutritivecoach.dao.FoodDao;
-import com.robin.camarasa.nutritivecoach.model.Food;
-import com.robin.camarasa.nutritivecoach.model.Preferences;
+import com.robin.camarasa.nutritivecoach.model.*;
 import com.robin.camarasa.nutritivecoach.web.dto.FoodDto;
 import com.robin.camarasa.nutritivecoach.web.dto.FoodcatDto;
 import com.robin.camarasa.nutritivecoach.web.dto.FoodnameDto;
@@ -24,19 +23,26 @@ import java.util.stream.Collectors;
 @Transactional
 public class RateController {
 
-    private final FoodDao foodDao;
     private KieServices ks = KieServices.Factory.get();
     private KieContainer kContainer = ks.getKieClasspathContainer();
     private KieSession kSession = kContainer.newKieSession("ksession-rate");
 
 
-    public RateController(FoodDao foodDao) {
-        this.foodDao = foodDao;
+    public RateController() {
+
     }
 
     @GetMapping(value = "/all")
     public String getallfood() {
-        Preferences preferences = new Preferences(2.5f,null,null);
+        Preferences preferences = new Preferences(2.5f,
+                                                    new User( "pseudo",
+                                                            "password",
+                                                            new PhysicalData(21,
+                                                                    0.5f,
+                                                                    0.5f)
+                                                    ),new Recipe(
+                                                            "test",
+                                                            2l));
         kSession.insert(preferences);
         kSession.fireAllRules();
         return "tests";
