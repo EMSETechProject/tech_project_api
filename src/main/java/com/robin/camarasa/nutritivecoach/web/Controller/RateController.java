@@ -1,51 +1,32 @@
 package com.robin.camarasa.nutritivecoach.web.Controller;
 
-import com.robin.camarasa.nutritivecoach.dao.FoodDao;
-import com.robin.camarasa.nutritivecoach.model.*;
-import com.robin.camarasa.nutritivecoach.web.dto.FoodDto;
-import com.robin.camarasa.nutritivecoach.web.dto.FoodcatDto;
-import com.robin.camarasa.nutritivecoach.web.dto.FoodnameDto;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
+import com.robin.camarasa.nutritivecoach.Rating.Rate;
+import com.robin.camarasa.nutritivecoach.Rating.RatingManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/rates")
 @Transactional
 public class RateController {
 
-    private KieServices ks = KieServices.Factory.get();
-    private KieContainer kContainer = ks.getKieClasspathContainer();
-    private KieSession kSession = kContainer.newKieSession("ksession-rate");
+    private final RatingManager ratingManager;
 
 
-    public RateController() {
-
+    @Autowired
+    public RateController(RatingManager ratingManager) {
+        this.ratingManager = ratingManager;
     }
+
 
     @GetMapping(value = "/all")
-    public String getallfood() {
-        Preferences preferences = new Preferences(2.5f,
-                                                    new User( "pseudo",
-                                                            "password",
-                                                            new PhysicalData(21,
-                                                                    0.5f,
-                                                                    0.5f)
-                                                    ),new Recipe(
-                                                            "test",
-                                                            2l));
-        kSession.insert(preferences);
-        kSession.fireAllRules();
-        return "tests";
+    public Rate getallfood() {
+        return ratingManager.applyRules();
     }
+
 
 }

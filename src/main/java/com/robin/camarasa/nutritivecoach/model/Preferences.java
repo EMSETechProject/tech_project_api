@@ -1,8 +1,11 @@
 package com.robin.camarasa.nutritivecoach.model;
 
+import org.kie.api.definition.type.ClassReactive;
+
 import javax.persistence.*;
 
 @Entity
+@ClassReactive
 @SuppressWarnings("serial")
 public class Preferences {
     @Id
@@ -61,5 +64,10 @@ public class Preferences {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Value : " + value + "\nUser : " + user.getPseudo() + "\nRecipe : " + recipe.getName();
     }
 }

@@ -1,22 +1,24 @@
 import com.robin.camarasa.nutritivecoach.model.*;
+import com.robin.camarasa.nutritivecoach.Rating.*;
+import com.robin.camarasa.nutritivecoach.web.dto.*;
 
-rule "R1"
+/*rule "R1"
     when
-        Preferences(value > 3f, value < 7f)
+        Rate(value > 3f, value < 7f)
     then
         System.out.println("\nAvis mitigé\n");
-end
+end*/
 
-rule "R2"
+/*rule "R2"
     when
-        Preferences(value <= 3f)
+        Rate(value <= 3f)
     then
         System.out.println("\nMauvais avis\n");
-end
+end*/
 
 rule "R3"
     when
-        Rate(value >= 7f)
+        $r : Rate(value >= 7f)
     then
-        System.out.println("\nSuper avis\n");
+        modify($r){setValue(2f)};
 end

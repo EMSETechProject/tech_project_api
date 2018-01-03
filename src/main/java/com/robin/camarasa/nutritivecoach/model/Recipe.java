@@ -47,4 +47,5 @@ public class Recipe {
     public void setType(Long type) {
         this.type = type;
     }
+
 }
