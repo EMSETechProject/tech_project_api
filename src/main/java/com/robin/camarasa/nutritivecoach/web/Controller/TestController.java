@@ -33,6 +33,11 @@ public class TestController {
         this.foodDao = foodDao;
     }
 
+    @GetMapping(value = "/a")
+    public String tes() {
+        return "a";
+    }
+
     @GetMapping(value = "/values")
     public List<TestDto> get(@PathVariable Long physicalDataId) {
         List<Recipe> recipes = recipeDao.findAll();
