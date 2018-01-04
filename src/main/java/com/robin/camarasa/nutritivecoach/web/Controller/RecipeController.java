@@ -1,12 +1,16 @@
 package com.robin.camarasa.nutritivecoach.web.Controller;
 
-import com.robin.camarasa.nutritivecoach.dao.FoodCookingDao;
-import com.robin.camarasa.nutritivecoach.dao.FoodDao;
-import com.robin.camarasa.nutritivecoach.dao.RecipeDao;
-import com.robin.camarasa.nutritivecoach.dao.UserDao;
+import com.robin.camarasa.nutritivecoach.dao.*;
 import com.robin.camarasa.nutritivecoach.model.Food;
 import com.robin.camarasa.nutritivecoach.model.FoodCooking;
+import com.robin.camarasa.nutritivecoach.model.Objectif;
 import com.robin.camarasa.nutritivecoach.model.Recipe;
+import com.robin.camarasa.nutritivecoach.problem_solving.csp.Meal.MealCSP;
+import com.robin.camarasa.nutritivecoach.problem_solving.csp.core.Assignment;
+import com.robin.camarasa.nutritivecoach.problem_solving.csp.core.MinConflictsStrategy;
+import com.robin.camarasa.nutritivecoach.problem_solving.csp.core.Variable;
+import com.robin.camarasa.nutritivecoach.problem_solving.csp.db.RecipeCSPDto;
+import com.robin.camarasa.nutritivecoach.problem_solving.csp.db.UserCSPDto;
 import com.robin.camarasa.nutritivecoach.web.dto.FoodCookingDto;
 import com.robin.camarasa.nutritivecoach.web.dto.FoodCookingLightDto;
 import com.robin.camarasa.nutritivecoach.web.dto.RecipeDto;
@@ -28,13 +32,15 @@ public class RecipeController {
     private final FoodCookingDao foodCookingDao;
     private final FoodDao foodDao;
     private final UserDao userDao;
+    private final ObjectifDao objectifDao;
 
 
-    public RecipeController(RecipeDao recipeDao, FoodCookingDao foodCookingDao, FoodDao foodDao, UserDao userDao) {
+    public RecipeController(RecipeDao recipeDao, FoodCookingDao foodCookingDao, FoodDao foodDao, UserDao userDao, ObjectifDao objectifDao) {
         this.recipeDao = recipeDao;
         this.foodCookingDao = foodCookingDao;
         this.foodDao = foodDao;
         this.userDao = userDao;
+        this.objectifDao = objectifDao;
     }
 
     @GetMapping(value = "/all")
@@ -61,30 +67,42 @@ public class RecipeController {
         return (new FoodCookingDto(foodCooking));
     }
 
-    @GetMapping(value = "/meal/{id_user}")
-    public List<RecipeDto> getmeal(@PathVariable Long id_user) {
-        List<Recipe> meal = new ArrayList<>();
+    @GetMapping(value = "/meal/{id_user}/{id_objectif}")
+    public List<RecipeCSPDto> getmeal(@PathVariable Long id_user, @PathVariable Long id_objectif) {
         List<Recipe> recipes = recipeDao.findAll();
-        Recipe appetizer = new Recipe();
-        Recipe main_course = new Recipe();
-        Recipe dessert = new Recipe();
-        Collections.shuffle(recipes);
-        while (appetizer.getId() == null || main_course.getId() == null || dessert.getId() == null) {
-            Collections.shuffle(recipes);
-            if(recipes.get(0).getType() == 0) {
-                appetizer = recipes.get(0);
-            } else if(recipes.get(0).getType() == 1) {
-                main_course = recipes.get(0);
-            } else if (recipes.get(0).getType() == 2) {
-                dessert = recipes.get(0);
-            } else {
-                return meal.stream().map(RecipeDto::new).collect(Collectors.toList());
+        List<FoodCooking> foodCookings = foodCookingDao.findAll();
+
+        List<RecipeCSPDto> appetizers = new ArrayList<>();
+        List<RecipeCSPDto> main_course = new ArrayList<>();
+        List<RecipeCSPDto> dessert = new ArrayList<>();
+        List<RecipeCSPDto> results = new ArrayList<>();
+        for(Recipe recipe : recipes) {
+            List<FoodCooking> foodCookings1 = new ArrayList<>();
+            List<Food> foods = new ArrayList<>();
+            for(FoodCooking foodCooking : foodCookings) {
+                if(foodCooking.getRecipe().getId().equals(recipe.getId())) {
+                    foodCookings1.add(foodCooking);
+                    foods.add(foodDao.getOne(foodCooking.getFood().getId()));
+                }
+            }
+            if (recipe.getType().equals(0l)){
+                appetizers.add(new RecipeCSPDto(recipe, foodCookings1, foods));
+            }
+            if (recipe.getType().equals(1l)){
+                main_course.add(new RecipeCSPDto(recipe, foodCookings1, foods));
+            }
+            if (recipe.getType().equals(2l)){
+                dessert.add(new RecipeCSPDto(recipe, foodCookings1, foods));
             }
         }
-        meal.add(appetizer);
-        meal.add(main_course);
-        meal.add(dessert);
-        return meal.stream().map(RecipeDto::new).collect(Collectors.toList());
+        MealCSP mealCSP = new MealCSP(appetizers, main_course, dessert, new UserCSPDto(userDao.getOne(id_user),objectifDao.getOne(id_objectif)));
+        MinConflictsStrategy minConflictsStrategy = new MinConflictsStrategy(500);
+        Assignment assignment = minConflictsStrategy.solve(mealCSP);
+        List<Variable> variables = assignment.getVariables();
+        results.add((RecipeCSPDto) assignment.getAssignment(variables.get(0)));
+        results.add((RecipeCSPDto) assignment.getAssignment(variables.get(1)));
+        results.add((RecipeCSPDto) assignment.getAssignment(variables.get(2)));
+        return results;
     }
 
     @GetMapping(value = "/ingredients/{id}")

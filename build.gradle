@@ -49,9 +49,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream
     compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.10'
 
-    compile 'mysql:mysql-connector-java'
-	compile "com.heroku.sdk:heroku-jdbc:0.1.1"
-    //compile('com.h2database:h2')
+//    compile 'mysql:mysql-connector-java'
+//	compile "com.heroku.sdk:heroku-jdbc:0.1.1"
+    compile('com.h2database:h2')
 }
 
 dependencyManagement {
