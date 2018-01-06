@@ -77,7 +77,7 @@ public class NNNetwork {
         Float neuronvalue = 0f;
         int jprime = j - 8;
         for (int i = 0 ; i < 8 ; i ++) {
-            neuronvalue += weights.get(8 * jprime + i).getValue() * neurons.get(new Double(Math.floor(jprime / 8)).intValue() + i).getValue();
+            neuronvalue += weights.get(8 * jprime + i).getValue() * neurons.get(new Double(Math.floor(jprime / 8)).intValue() * 8 + i).getValue();
         }
         neuronvalue += bias.get(jprime).getValue();
         neurons.get(j).setValue(neuronvalue);
