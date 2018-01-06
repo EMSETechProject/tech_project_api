@@ -43,7 +43,7 @@ public class TestController {
         for (int i = 8 ; i < 16 ; i++) {
             nnNetwork.getNeurons().get(i).setValue(i*1f);
         }
-        nnNetwork.computeNeuron(16);
+        nnNetwork.computeNeuron(17);
         return new NetworkDto(nnNetwork);
     }
 }
