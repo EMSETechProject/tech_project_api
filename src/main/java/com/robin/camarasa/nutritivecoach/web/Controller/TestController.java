@@ -40,10 +40,7 @@ public class TestController {
     @GetMapping
     public NetworkDto test() {
         NNNetwork nnNetwork = nnNetworkDao.getOne(1l);
-        for (int i = 8 ; i < 16 ; i++) {
-            nnNetwork.getNeurons().get(i).setValue(i*1f);
-        }
-        nnNetwork.computeNeuron(17);
+        nnNetwork.computeNetwork();
         return new NetworkDto(nnNetwork);
     }
 }
