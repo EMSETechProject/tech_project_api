@@ -25,8 +25,10 @@ public class TestController {
         this.nnNeuronDao = nnNeuronDao;
     }
 
-    @GetMapping(value = "/makeNetwork")
+    @PostMapping(value = "/makeNetwork")
     public NetworkDto testUser() {
-        return new NetworkDto(new NNNetwork(1l, nnWeightDao.findAll(), nnBiasDao.findAll(), nnNeuronDao.findAll()));
+        NNNetwork nnNetwork = new NNNetwork(1l, nnWeightDao.findAll(), nnBiasDao.findAll(), nnNeuronDao.findAll());
+        nnNetworkDao.save(nnNetwork);
+        return new NetworkDto(nnNetwork);
     }
 }
