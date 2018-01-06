@@ -2164,4 +2164,3 @@ INSERT INTO food_cooking (id, weight, food_id, recipe_id) VALUES (2191, 0, 6781,
 INSERT INTO physical_data (id, age, size, weight) VALUES (381, 21, 1.87, 75);
 INSERT INTO user (id, password, pseudo, physical_data_id) VALUES (411, 'Mathilde1996', 'robin', 381);
 INSERT INTO objectif (id, value, user_id) VALUES (91, 80, 411);
-
