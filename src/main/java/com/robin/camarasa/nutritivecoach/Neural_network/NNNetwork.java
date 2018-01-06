@@ -82,4 +82,10 @@ public class NNNetwork {
         neuronvalue += bias.get(jprime).getValue();
         neurons.get(j).setValue(neuronvalue);
     }
+
+    public void computeNetwork() {
+        for (int i = 8 ; i < neurons.size() ; i++) {
+            computeNeuron(i);
+        }
+    }
 }
