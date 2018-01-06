@@ -64,4 +64,22 @@ public class NNNetwork {
     public void setNeurons(List<NNNeuron> neurons) {
         this.neurons = neurons;
     }
+
+    public void modifyWeight(int i, Float value) {
+        weights.get(i).setValue(value);
+    }
+
+    public void modifyBias(int i, Float value) {
+        bias.get(i).setValue(value);
+    }
+
+    public void computeNeuron(int j) {
+        Float neuronvalue = 0f;
+        int jprime = j - 8;
+        for (int i = 0 ; i < 8 ; i ++) {
+            neuronvalue += weights.get(8 * jprime + i).getValue() * neurons.get(new Double(Math.floor(jprime / 8)).intValue() + i).getValue();
+        }
+        neuronvalue += bias.get(jprime).getValue();
+        neurons.get(j).setValue(neuronvalue);
+    }
 }

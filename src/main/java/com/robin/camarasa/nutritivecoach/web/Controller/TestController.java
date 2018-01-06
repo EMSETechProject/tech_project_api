@@ -31,4 +31,19 @@ public class TestController {
         nnNetworkDao.save(nnNetwork);
         return new NetworkDto(nnNetwork);
     }
+
+    @GetMapping(value = "/visualize")
+    public NetworkDto visualize() {
+        return new NetworkDto(nnNetworkDao.getOne(1l));
+    }
+
+    @GetMapping
+    public NetworkDto test() {
+        NNNetwork nnNetwork = nnNetworkDao.getOne(1l);
+        for (int i = 8 ; i < 16 ; i++) {
+            nnNetwork.getNeurons().get(i).setValue(i*1f);
+        }
+        nnNetwork.computeNeuron(16);
+        return new NetworkDto(nnNetwork);
+    }
 }

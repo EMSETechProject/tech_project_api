@@ -4,8 +4,8 @@ import com.robin.camarasa.nutritivecoach.dao.NNBiasDao;
 
 public class Main {
     public static void main(String[] args) {
-        Float j = 10f;
-        Double d = Math.floor(j.doubleValue()/8f);
+        int j = 63;
+        Double d = Math.floor(j/8);
         System.out.println(d);
     }
 }
