@@ -1,11 +1,15 @@
 package com.robin.camarasa.nutritivecoach.Neural_network;
 
+import com.robin.camarasa.nutritivecoach.model.Recipe;
+import com.robin.camarasa.nutritivecoach.model.User;
 import com.robin.camarasa.nutritivecoach.model.Weight;
+import com.robin.camarasa.nutritivecoach.problem_solving.csp.db.RecipeCSPDto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -86,6 +90,61 @@ public class NNNetwork {
     public void computeNetwork() {
         for (int i = 8 ; i < neurons.size() ; i++) {
             computeNeuron(i);
+        }
+    }
+
+    public Float cost(Float rate) {
+        computeNetwork();
+        return (rate - neurons.get(neurons.size() - 1).getValue()) * (rate - neurons.get(neurons.size() - 1).getValue());
+    }
+
+    public Float gradWeight(int i, Float costinit , Float rate) {
+        Float tmp = weights.get(i).getValue();
+        weights.get(i).setValue(tmp + 0.05f);
+        Float cost = cost(rate);
+        weights.get(i).setValue(tmp);
+        return (cost - costinit)/0.05f;
+    }
+
+    public Float gradBias(int i, Float costinit, Float rate) {
+        Float tmp = bias.get(i).getValue();
+        bias.get(i).setValue(tmp + 0.05f);
+        Float cost = cost(rate);
+        bias.get(i).setValue(tmp);
+        return (cost - costinit)/0.05f;
+    }
+
+    public void learn(User user, RecipeCSPDto recipeCSPDto, Float rate) {
+        neurons.get(0).setValue(user.getPhysicalData().getAge().floatValue()/100f);
+        neurons.get(1).setValue(user.getPhysicalData().getSize().floatValue()/2.2f);
+        neurons.get(2).setValue(user.getPhysicalData().getWeight()/150f);
+        neurons.get(3).setValue(recipeCSPDto.getCalories());
+        neurons.get(4).setValue(recipeCSPDto.getFibres());
+        neurons.get(5).setValue(recipeCSPDto.getProteines());
+        neurons.get(6).setValue(recipeCSPDto.getLipides());
+        neurons.get(7).setValue(recipeCSPDto.getGlucides());
+
+        List<Float> gradw = new ArrayList<>();
+        List<Float> gradb = new ArrayList<>();
+
+        Float costinit = cost(rate);
+
+        for (int i = 0 ; i < weights.size() ; i++) {
+            gradw.add(gradWeight(i, costinit, rate));
+        }
+
+        for (int i = 0 ; i < bias.size() ; i++) {
+            gradb.add(gradBias(i, costinit, rate));
+        }
+
+        for (int i = 0 ; i < bias.size() ; i++) {
+            Float tmp = bias.get(i).getValue();
+            bias.get(i).setValue(tmp + gradb.get(i));
+        }
+
+        for (int i = 0 ; i < weights.size() ; i++) {
+            Float tmp = weights.get(i).getValue();
+            weights.get(i).setValue(tmp + gradw.get(i));
         }
     }
 }

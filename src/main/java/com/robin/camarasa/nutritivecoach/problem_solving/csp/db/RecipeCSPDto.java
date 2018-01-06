@@ -12,6 +12,10 @@ public class RecipeCSPDto {
     private Long type;
     private Long numberOfIngredients;
     private Float calories;
+    private Float lipides;
+    private Float glucides;
+    private Float fibres;
+    private Float proteines;
 
     public RecipeCSPDto(Recipe recipe, List<FoodCooking> foodCookings, List<Food> foods) {
         id = recipe.getId();
@@ -19,8 +23,16 @@ public class RecipeCSPDto {
         type = recipe.getType();
         numberOfIngredients = (new Integer(foodCookings.size())).longValue();
         calories = 0f;
+        lipides = 0f;
+        glucides = 0f;
+        fibres = 0f;
+        proteines = 0f;
         for (int i = 0 ; i < foods.size() ; i++) {
             calories = calories + foods.get(i).getEnergie() * foodCookings.get(i).getWeight() / 100;
+            lipides = lipides + foods.get(i).getLipides() * foodCookings.get(i).getWeight() / 100;
+            glucides = glucides + foods.get(i).getGlucides() * foodCookings.get(i).getWeight() / 100;
+            fibres = fibres + foods.get(i).getFibres() * foodCookings.get(i).getWeight() / 100;
+            proteines = proteines + foods.get(i).getProteines_brutes() * foodCookings.get(i).getWeight() / 100;
         }
     }
 
@@ -62,5 +74,37 @@ public class RecipeCSPDto {
 
     public void setCalories(Float calories) {
         this.calories = calories;
+    }
+
+    public Float getLipides() {
+        return lipides;
+    }
+
+    public void setLipides(Float lipides) {
+        this.lipides = lipides;
+    }
+
+    public Float getGlucides() {
+        return glucides;
+    }
+
+    public void setGlucides(Float glucides) {
+        this.glucides = glucides;
+    }
+
+    public Float getFibres() {
+        return fibres;
+    }
+
+    public void setFibres(Float fibres) {
+        this.fibres = fibres;
+    }
+
+    public Float getProteines() {
+        return proteines;
+    }
+
+    public void setProteines(Float proteines) {
+        this.proteines = proteines;
     }
 }
