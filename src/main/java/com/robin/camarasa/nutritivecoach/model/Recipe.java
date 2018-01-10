@@ -19,6 +19,12 @@ public class Recipe {
     public Recipe() {
     }
 
+    public Recipe(String name, Long type, Long id) {
+        this.name = name;
+        this.type = type;
+        this.id = id;
+    }
+
     public Recipe(String name, Long type) {
         this.name = name;
         this.type = type;
@@ -48,4 +54,10 @@ public class Recipe {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "id : " + this.id + "\n" +
+                "name : " + this.getName() + "\n" +
+                "type : " + this.getType() + "\n";
+    }
 }

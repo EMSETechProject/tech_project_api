@@ -1,24 +1,10 @@
 import com.robin.camarasa.nutritivecoach.model.*;
-import com.robin.camarasa.nutritivecoach.Rating.*;
-import com.robin.camarasa.nutritivecoach.web.dto.*;
+import com.robin.camarasa.nutritivecoach.Expert_system.*;
 
-/*rule "R1"
+rule "R1"
     when
-        Rate(value > 3f, value < 7f)
+        Preferences(value > 0.5)
     then
-        System.out.println("\nAvis mitigé\n");
-end*/
-
-/*rule "R2"
-    when
-        Rate(value <= 3f)
-    then
-        System.out.println("\nMauvais avis\n");
-end*/
-
-rule "R3"
-    when
-        $r : Rate(value >= 7f)
-    then
-        modify($r){setValue(2f)};
+           System.out.println("Test");
+        //delete(Recipe (getId() == $p.getRecipe().getId()));
 end

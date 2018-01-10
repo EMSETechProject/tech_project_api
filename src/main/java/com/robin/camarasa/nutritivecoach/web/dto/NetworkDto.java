@@ -1,10 +1,9 @@
 package com.robin.camarasa.nutritivecoach.web.dto;
 
-import com.robin.camarasa.nutritivecoach.Neural_network.NNBias;
-import com.robin.camarasa.nutritivecoach.Neural_network.NNNetwork;
-import com.robin.camarasa.nutritivecoach.Neural_network.NNNeuron;
-import com.robin.camarasa.nutritivecoach.Neural_network.NNWeight;
-import com.robin.camarasa.nutritivecoach.model.Food;
+import com.robin.camarasa.nutritivecoach.IA.Neural_network.NNBias;
+import com.robin.camarasa.nutritivecoach.IA.Neural_network.NNNetwork;
+import com.robin.camarasa.nutritivecoach.IA.Neural_network.NNNeuron;
+import com.robin.camarasa.nutritivecoach.IA.Neural_network.NNWeight;
 
 import java.util.List;
 

@@ -1,11 +1,9 @@
 package com.robin.camarasa.nutritivecoach.web.Controller;
 
-import com.robin.camarasa.nutritivecoach.dao.ObjectifDao;
-import com.robin.camarasa.nutritivecoach.dao.PhysicalDataDao;
-import com.robin.camarasa.nutritivecoach.dao.UserDao;
-import com.robin.camarasa.nutritivecoach.model.Objectif;
-import com.robin.camarasa.nutritivecoach.model.PhysicalData;
-import com.robin.camarasa.nutritivecoach.model.User;
+import com.robin.camarasa.nutritivecoach.IA.Neural_network.NNNetwork;
+import com.robin.camarasa.nutritivecoach.dao.*;
+import com.robin.camarasa.nutritivecoach.model.*;
+import com.robin.camarasa.nutritivecoach.IA.problem_solving.csp.db.RecipeCSPDto;
 import com.robin.camarasa.nutritivecoach.web.dto.ObjectifDto;
 import com.robin.camarasa.nutritivecoach.web.dto.UserConnectionDto;
 import com.robin.camarasa.nutritivecoach.web.dto.UserDto;
@@ -13,6 +11,7 @@ import com.robin.camarasa.nutritivecoach.web.dto.UserFullDataDto;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,12 +23,20 @@ public class UserController {
     private final UserDao userDao;
     private final ObjectifDao objectifDao;
     private final PhysicalDataDao physicalDataDao;
+    private final PreferencesDao preferencesDao;
+    private final FoodCookingDao foodCookingDao;
+    private final RecipeDao recipeDao;
+    private final NNNetworkDao nnNetworkDao;
 
 
-    public UserController(UserDao userDao, ObjectifDao objectifDao, PhysicalDataDao physicalDataDao) {
+    public UserController(UserDao userDao, ObjectifDao objectifDao, PhysicalDataDao physicalDataDao, PreferencesDao preferencesDao, FoodCookingDao foodCookingDao, RecipeDao recipeDao, NNNetworkDao nnNetworkDao) {
         this.userDao = userDao;
         this.objectifDao = objectifDao;
         this.physicalDataDao = physicalDataDao;
+        this.preferencesDao = preferencesDao;
+        this.foodCookingDao = foodCookingDao;
+        this.recipeDao = recipeDao;
+        this.nnNetworkDao = nnNetworkDao;
     }
 
     @GetMapping(value = "/findbyid/{userId}")
@@ -59,6 +66,22 @@ public class UserController {
             PhysicalData physicalData = physicalDataDao.getOne(id);
             User user = new User(pseudo,password,physicalData);
             userDao.save(user);
+            List<Recipe> recipes = recipeDao.findAll();
+            NNNetwork nnNetwork = nnNetworkDao.getOne(1l);
+            for (Recipe recipe : recipes) {
+
+                List<FoodCooking> foodCookings = foodCookingDao.findAll();
+                List<FoodCooking> foodCookings1 = new ArrayList<>();
+                List<Food> foods = new ArrayList<>();
+                for (FoodCooking foodCooking : foodCookings) {
+                    if(recipe.getId().equals(foodCooking.getRecipe().getId())) {
+                        foodCookings1.add(foodCooking);
+                    }
+                }
+                RecipeCSPDto recipeCSPDto = new RecipeCSPDto(recipe, foodCookings1);
+                Float value = nnNetwork.computePreference(user, recipeCSPDto);
+                Preferences preferences = new Preferences(value, user, recipe);
+            }
             return (new UserConnectionDto(user));
         }catch (Exception e) {
             return (new UserConnectionDto(-1L));

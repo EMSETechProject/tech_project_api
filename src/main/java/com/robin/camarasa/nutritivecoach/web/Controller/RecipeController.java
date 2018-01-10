@@ -5,12 +5,12 @@ import com.robin.camarasa.nutritivecoach.model.Food;
 import com.robin.camarasa.nutritivecoach.model.FoodCooking;
 import com.robin.camarasa.nutritivecoach.model.Objectif;
 import com.robin.camarasa.nutritivecoach.model.Recipe;
-import com.robin.camarasa.nutritivecoach.problem_solving.csp.Meal.MealCSP;
-import com.robin.camarasa.nutritivecoach.problem_solving.csp.core.Assignment;
-import com.robin.camarasa.nutritivecoach.problem_solving.csp.core.MinConflictsStrategy;
-import com.robin.camarasa.nutritivecoach.problem_solving.csp.core.Variable;
-import com.robin.camarasa.nutritivecoach.problem_solving.csp.db.RecipeCSPDto;
-import com.robin.camarasa.nutritivecoach.problem_solving.csp.db.UserCSPDto;
+import com.robin.camarasa.nutritivecoach.IA.problem_solving.csp.Meal.MealCSP;
+import com.robin.camarasa.nutritivecoach.IA.problem_solving.csp.core.Assignment;
+import com.robin.camarasa.nutritivecoach.IA.problem_solving.csp.core.MinConflictsStrategy;
+import com.robin.camarasa.nutritivecoach.IA.problem_solving.csp.core.Variable;
+import com.robin.camarasa.nutritivecoach.IA.problem_solving.csp.db.RecipeCSPDto;
+import com.robin.camarasa.nutritivecoach.IA.problem_solving.csp.db.UserCSPDto;
 import com.robin.camarasa.nutritivecoach.web.dto.FoodCookingDto;
 import com.robin.camarasa.nutritivecoach.web.dto.FoodCookingLightDto;
 import com.robin.camarasa.nutritivecoach.web.dto.RecipeDto;
@@ -78,21 +78,19 @@ public class RecipeController {
         List<RecipeCSPDto> results = new ArrayList<>();
         for(Recipe recipe : recipes) {
             List<FoodCooking> foodCookings1 = new ArrayList<>();
-            List<Food> foods = new ArrayList<>();
             for(FoodCooking foodCooking : foodCookings) {
                 if(foodCooking.getRecipe().getId().equals(recipe.getId())) {
                     foodCookings1.add(foodCooking);
-                    foods.add(foodDao.getOne(foodCooking.getFood().getId()));
                 }
             }
             if (recipe.getType().equals(0l)){
-                appetizers.add(new RecipeCSPDto(recipe, foodCookings1, foods));
+                appetizers.add(new RecipeCSPDto(recipe, foodCookings1));
             }
             if (recipe.getType().equals(1l)){
-                main_course.add(new RecipeCSPDto(recipe, foodCookings1, foods));
+                main_course.add(new RecipeCSPDto(recipe, foodCookings1));
             }
             if (recipe.getType().equals(2l)){
-                dessert.add(new RecipeCSPDto(recipe, foodCookings1, foods));
+                dessert.add(new RecipeCSPDto(recipe, foodCookings1));
             }
         }
         MealCSP mealCSP = new MealCSP(appetizers, main_course, dessert, new UserCSPDto(userDao.getOne(id_user),objectifDao.getOne(id_objectif)));
